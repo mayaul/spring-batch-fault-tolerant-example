@@ -24,6 +24,7 @@ public class SampleBatchConfig {
 
     private static final int RUNTIME_EXCEPTION_SKIP_LIMIT = 3;
     private static final int RUNTIME_EXCEPTION_LIMIT_LIMIT = 2;
+
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
@@ -51,13 +52,19 @@ public class SampleBatchConfig {
                 .skipLimit(RUNTIME_EXCEPTION_SKIP_LIMIT)
                 .retry(RuntimeException.class)
                 .retryLimit(RUNTIME_EXCEPTION_LIMIT_LIMIT)
-//                .listener(skipListener(null))
+                .listener(sampleBatchListener())
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
                 .transactionManager(new ResourcelessTransactionManager())
                 .build();
 
+    }
+
+    @Bean
+    @StepScope
+    public SampleBatchListener sampleBatchListener() {
+        return new SampleBatchListener();
     }
 
     @Bean
